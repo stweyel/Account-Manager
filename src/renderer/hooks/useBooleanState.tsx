@@ -2,7 +2,7 @@ import {useCallback, useState} from 'react';
 
 const useBooleanState = (
   initialValue: boolean,
-): [state: boolean, toggleState: () => void, setTrue: () => void, setFalse: () => void] => {
+): any => {
   const [state, setState] = useState(initialValue);
 
   const setFalse = useCallback((): void => {

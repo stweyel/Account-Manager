@@ -12,6 +12,7 @@ import {
   NodeIdentifier,
   PaginatedResults,
 } from '@renderer/types';
+import keytar from 'keytar'
 import {formatAddressFromNode} from '@renderer/utils/address';
 
 interface Address {
@@ -48,8 +49,19 @@ export function setLocalAndAccountReducer<T extends AccountNumber>(sliceName: st
   return (state: any, {payload}: PayloadAction<T>) => {
     const {account_number: accountNumber} = payload;
     const account = state[accountNumber];
+
     state[accountNumber] = account ? {account, ...payload} : payload;
-    localStore.set(getStateName(sliceName), state);
+    const signing_key = state[accountNumber].signing_key;
+    delete state[accountNumber].signing_key;
+
+    console.log('store---new account', state[accountNumber])
+    // localStore.set(getStateName(sliceName), {...state});
+    keytar.setPassword('Thenewboston', accountNumber, signing_key)
+      .then(() => {
+        console.log('store---signing key has been stored on keychain', signing_key)
+      })
+      .catch(err => {
+      });
   };
 }
 

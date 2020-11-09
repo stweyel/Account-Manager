@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useRef} from 'react';
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import clsx from 'clsx';
 import {ipcRenderer, remote, SaveDialogOptions} from 'electron';
@@ -7,7 +7,7 @@ import Icon, {IconType} from '@renderer/components/Icon';
 import {useBooleanState} from '@renderer/hooks';
 import {getCustomClassNames} from '@renderer/utils/components';
 import {displayToast} from '@renderer/utils/toast';
-
+import keytar from 'keytar';
 import Tile from '../Tile';
 import './TileSigningKey.scss';
 
@@ -15,16 +15,24 @@ interface ComponentProps {
   accountNumber: string;
   className?: string;
   loading: boolean;
-  signingKey: string;
 }
 
-const TileSigningKey: FC<ComponentProps> = ({accountNumber, className, loading, signingKey}) => {
+const TileSigningKey: FC<ComponentProps> = ({accountNumber, className, loading}) => {
   const copyRef = useRef<HTMLDivElement>(null);
   const downloadRef = useRef<HTMLDivElement>(null);
   const eyeRef = useRef<HTMLDivElement>(null);
   const [showSigningKey, toggleSigningKey, , hideSigningKey] = useBooleanState(false);
+  const [signingKey, setSigningKey] = useState('')
 
   useEffect(() => {
+    // TODO: Get Signing Key from the keychain
+    if(!signingKey) {
+        keytar.getPassword('Thenewboston', accountNumber).then(res => {
+          setSigningKey(res as string);
+        }).catch(err => {
+          setSigningKey('');
+        });
+    }
     hideSigningKey();
   }, [accountNumber, hideSigningKey]);
 

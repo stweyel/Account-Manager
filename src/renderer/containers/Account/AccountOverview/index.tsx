@@ -8,7 +8,6 @@ import {getActivePrimaryValidatorConfig, getManagedAccounts} from '@renderer/sel
 import {setManagedAccountBalance} from '@renderer/store/app';
 import {AppDispatch} from '@renderer/types';
 import {formatAddress} from '@renderer/utils/address';
-
 import './AccountOverview.scss';
 
 const AccountOverview: FC = () => {
@@ -51,7 +50,7 @@ const AccountOverview: FC = () => {
       <TileAccountBalance balance={managedAccount?.balance || balance || 0} loading={loading} type="account" />
       <TileAccountNumber accountNumber={accountNumber} type="account" />
       {managedAccount && (
-        <TileSigningKey accountNumber={accountNumber} loading={loading} signingKey={managedAccount.signing_key} />
+        <TileSigningKey accountNumber={accountNumber} loading={loading} />
       )}
     </div>
   );
