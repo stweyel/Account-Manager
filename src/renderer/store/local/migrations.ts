@@ -55,7 +55,7 @@ export const runMigrations = (localStore: ElectronStore<LocalStore>): void => {
 
   for (const migrationId of migrationIdsToRun) {
     try {
-      migrations[migrationId]();
+      migrations[migrationId](localStore);
       localStore.set('version', migrationId);
     } catch (error) {
       console.error(error);
